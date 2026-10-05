@@ -12,6 +12,12 @@ class UserInput(BaseModel):
     BloodPressure: Annotated[int, Field(ge=0, le=140, description="Diastolic blood pressure (mm Hg)")]
     SkinThickness: Annotated[int, Field(ge=0, le=100, description="Triceps skin fold thickness (mm)")]
     Insulin: Annotated[int, Field(ge=0, le=900, description="2-Hour serum insulin (mu U/ml)")]
-    BMI: Annotated[float, Field(ge=0.0, le=70.0, description="Body mass index (weight in kg/(height in m)^2)")]
+    weight: Annotated[float, Field(..., gt=0, lt=500, description="Weight of the user in kilograms", examples=[90.0])]
+    height: Annotated[float, Field(..., gt=0, lt=4, description="Height of the user in meters", examples=[1.65])]
     DiabetesPedigreeFunction: Annotated[float, Field(ge=0.0, le=2.5, description="Diabetes pedigree function")]
     Age: Annotated[int, Field(ge=10, le=100, description="Age (years)")]
+    
+    @computed_field
+    @property
+    def bmi(self) -> float:
+        return round(self.weight / (self.height ** 2),  2)
